@@ -52,7 +52,16 @@ configuration:
 # Constrain all Ozone pods to nodes with specific node labels
 nodeSelector: {}
 # Constrain all Ozone pods to nodes by affinity/anti-affinity rules
-affinity: {}
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+            - key: app
+              operator: In
+              values:
+                - ozone
+        topologyKey: kubernetes.io/hostname
 # Allow to schedule all Ozone pods on nodes with matching taints
 tolerations: []
 
@@ -62,7 +71,7 @@ securityContext: {}
 # Datanode configuration
 datanode:
   # Number of Datanode replicas
-  replicas: 3
+  replicas: 1
   # Command to launch Datanode (templated)
   command: ~
   # Arguments to launch Datanode (templated)
@@ -72,7 +81,13 @@ datanode:
   # Additional Datanode envFrom items to set up environment variables (templated)
   envFrom: []
   # Datanode resource requests and limits
-  resources: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
   # Constrain Datanode pods to nodes with specific node labels
   nodeSelector: {}
   # Constrain Datanode pods to nodes by affinity/anti-affinity rules
@@ -90,17 +105,12 @@ datanode:
     annotations: {}
   # Datanode persistence
   persistence:
-    # Enable persistence
-    enabled: false
-    # Persistence access modes
+    enabled: true
     accessModes:
       - ReadWriteOnce
-    # Path for datanode volume mount
     path: /data
-    # Volume size
     size: 10Gi
-    # The name of a specific storage class name to use
-    storageClassName: ~
+    storageClassName: gp3
 
 # Ozone Manager configuration
 om:
@@ -115,7 +125,13 @@ om:
   # Additional Ozone Manager envFrom items to set up environment variables (templated)
   envFrom: []
   # Ozone Manager resource requests and limits
-  resources: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
   # Constrain Ozone Manager pods to nodes with specific node labels
   nodeSelector: {}
   # Constrain Ozone Manager pods to nodes by affinity/anti-affinity rules
@@ -133,17 +149,12 @@ om:
     annotations: {}
   # Ozone Manager persistence
   persistence:
-    # Enable persistence
-    enabled: false
-    # Persistence access modes
+    enabled: true
     accessModes:
       - ReadWriteOnce
-    # Path for Ozone Manager volume mount
     path: /data
-    # Volume size
     size: 10Gi
-    # The name of a specific storage class name to use
-    storageClassName: ~
+    storageClassName: gp3
 
 # S3 Gateway configuration
 s3g:
@@ -158,7 +169,13 @@ s3g:
   # Additional S3 Gateway envFrom items to set up environment variables (templated)
   envFrom: []
   # S3 Gateway resource requests and limits
-  resources: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
   # Constrain S3 Gateway pods to nodes with specific node labels
   nodeSelector: {}
   # Constrain S3 Gateway pods to nodes by affinity/anti-affinity rules
@@ -176,17 +193,12 @@ s3g:
     annotations: {}
   # S3 Gateway persistence
   persistence:
-    # Enable persistence
     enabled: false
-    # Persistence access modes
     accessModes:
       - ReadWriteOnce
-    # Path for S3 Gateway volume mount
     path: /data
-    # Volume size
     size: 10Gi
-    # The name of a specific storage class name to use
-    storageClassName: ~
+    storageClassName: gp3
 
 # Storage Container Manager configuration
 scm:
@@ -201,7 +213,13 @@ scm:
   # Additional Storage Container Manager envFrom items to set up environment variables (templated)
   envFrom: []
   # Storage Container Manager resource requests and limits
-  resources: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
   # Constrain Storage Container Manager pods to nodes with specific node labels
   nodeSelector: {}
   # Constrain Storage Container Manager pods to nodes by affinity/anti-affinity rules
@@ -219,14 +237,9 @@ scm:
     annotations: {}
   # Storage Container Manager persistence
   persistence:
-    # Enable persistence
-    enabled: false
-    # Persistence access modes
+    enabled: true
     accessModes:
       - ReadWriteOnce
-    # Path for Storage Container Manager volume mount
     path: /data
-    # Volume size
     size: 10Gi
-    # The name of a specific storage class name to use
-    storageClassName: ~
+    storageClassName: gp3
